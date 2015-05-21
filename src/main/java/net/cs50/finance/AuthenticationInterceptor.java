@@ -20,6 +20,8 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     UserDao userDao;
 
+    // catches all requests (Spring does this for you) before passing the
+    // request to the requested controller
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
 

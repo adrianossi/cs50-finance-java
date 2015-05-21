@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.Arrays;
 
+// AJO: the entry into our app; the only class with a main method
 @SpringBootApplication
 public class Cs50FinanceApplication {
 

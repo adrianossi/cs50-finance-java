@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class AuthenticationController extends AbstractFinanceController {
 
+    // @reqmaps sends users to the appropriate html templates
     @RequestMapping(value = "/")
     public String index(){
         return "redirect:portfolio";

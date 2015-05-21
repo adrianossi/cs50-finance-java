@@ -27,6 +27,7 @@ public abstract class AbstractFinanceController {
 
     public User getUserFromSession(HttpServletRequest request){
         int userId = (int) request.getSession().getAttribute(userSessionKey);
+        // using the user DAO to find a user
         return userDao.findByUid(userId);
     }
 

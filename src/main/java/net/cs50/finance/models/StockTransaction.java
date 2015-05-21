@@ -19,6 +19,10 @@ import java.util.Date;
 @Table(name = "transactions")
 public class StockTransaction extends AbstractEntity {
 
+    // an enum is a special kind of class that enables you to make
+    // a custom data type that can hold one of a specific set of
+    // values, as defined in the enum. Like a custom boolean with
+    // more than one option possible. Here we have only BUY and SELL.
     public enum TransactionType {
         BUY("buy"), SELL("sell");
         private String type;

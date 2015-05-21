@@ -16,8 +16,18 @@ import java.nio.charset.Charset;
 /**
  * Represents the stock for a particular company. Encapsulates the stock symbol, company name, and current price.
  */
+
+// note, this is not a persistent entity; its purpose is to encapsulate
+// the current state of a stock in the marketplace, to be discarded when
+// a transaction is complete, since prices are volatile.
+//
+// Also, Stock is a factory for Stocks. It has no public constructor.
+// The only way to create a stock is to call the static method
+// lookupStock().
 public class Stock {
 
+    // final properties can't be changed once set. Great for one-off
+    // disposable objs like Stock
     private final String symbol;
     private final float price;
     private final String name;
