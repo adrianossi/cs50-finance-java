@@ -19,10 +19,10 @@ public class StockLookupException extends Exception {
 
     @Override
     public String getMessage() {
-        return super.getMessage() + "Unable to lookup data for stock: " + symbol;
+        return super.getMessage() + "Unable to lookup data for stock: " + this.getSymbol();
     }
 
     public String getSymbol() {
-        return symbol;
+        return this.symbol;
     }
 }

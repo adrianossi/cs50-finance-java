@@ -1,7 +1,9 @@
 package net.cs50.finance.controllers;
 
 import net.cs50.finance.models.Stock;
+import net.cs50.finance.models.StockHolding;
 import net.cs50.finance.models.StockLookupException;
+import net.cs50.finance.models.User;
 import net.cs50.finance.models.dao.StockHoldingDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,14 +34,13 @@ public class StockController extends AbstractFinanceController {
     @RequestMapping(value = "/quote", method = RequestMethod.POST)
     public String quote(String symbol, Model model) {
 
-        // TODO - Implement quote lookup
-
+        // Lookup quote
         Stock retrievedStock;
         try {
             retrievedStock = Stock.lookupStock(symbol);
         } catch (StockLookupException e) {
-            model.addAttribute("message", e.getMessage());
-            return "error";
+            e.printStackTrace();
+            return this.displayError("Problem resolving stock symbol", model);
         }
 
         // pass data to template
@@ -63,13 +64,58 @@ public class StockController extends AbstractFinanceController {
     @RequestMapping(value = "/buy", method = RequestMethod.POST)
     public String buy(String symbol, int numberOfShares, HttpServletRequest request, Model model) {
 
-        // TODO - Implement buy action
+        // get user from session
+        User user = getUserFromSession(request);
 
+        // make purchase
+        StockHolding userPosition;
+        try {
+            userPosition = StockHolding.buyShares(user, symbol, numberOfShares);
+        } catch (StockLookupException e) {
+            e.printStackTrace();
+            return this.displayError("Problem resolving stock symbol", model);
+        }
+
+        // persist purchase
+        stockHoldingDao.save(userPosition);
+
+        // build confirmation message
+        String msg = "Purchase of " + numberOfShares;
+        msg = (numberOfShares == 1) ? msg + " share of " : msg + " shares of ";
+        msg = msg + symbol + " confirmed.";
+
+        model.addAttribute("confirmMessage", msg);
         model.addAttribute("title", "Buy");
         model.addAttribute("action", "/buy");
         model.addAttribute("buyNavClass", "active");
 
         return "transaction_confirm";
+
+        /* DON'T NEED TO DO ANY OF THIS
+
+            // DONE FOR ME IN STOCKTRANSACTION CONSTRUCTOR (this.price...)
+            // get current stock info from Yahoo
+            Stock retrievedStock;
+            try {
+                retrievedStock = Stock.lookupStock(symbol);
+            } catch (StockLookupException e) {
+                return this.displayError("Problem resolving stock symbol", model);
+            }
+
+            // DONE FOR ME IN STOCKHOLDING.buyShares(user, symb, numShares)
+            // check if user already holds the stock
+            StockHolding heldStock = StockHoldingDao.findBySymbolAndOwnerId(symbol, user.getUid());
+
+            // if new stock for this user, create new StockHolding...
+            if (heldStock == null) {
+                try {
+                    heldStock = StockHolding.buyShares(user, symbol, numberOfShares);
+                } catch (StockLookupException e) {
+                    this.displayError("Problem resolving stock symbol", model);
+                }
+            }
+            // ...else update user's current holding of this stock
+        */
     }
 
     @RequestMapping(value = "/sell", method = RequestMethod.GET)

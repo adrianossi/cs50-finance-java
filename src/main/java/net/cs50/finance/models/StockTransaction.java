@@ -30,7 +30,7 @@ public class StockTransaction extends AbstractEntity {
         TransactionType(String type){
             this.type = type;
         }
-    };
+    }
 
     private TransactionType type;
     private int shares;

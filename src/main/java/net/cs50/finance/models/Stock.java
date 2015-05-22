@@ -90,6 +90,12 @@ public class Stock {
         }
 
         // stockInfo should be a collection like { "YHOO", "Yahoo, Inc.", 123.45 }
+        // validate the data; bad data will have { "N/A", "N/A", "N/A" }
+        if (stockInfo.get(2).equals("N/A")) {
+            throw new StockLookupException("Invalid stock symbol", symbol);
+        }
+
+        // return Stock instance with valid data
         return new Stock(stockInfo.get(0), stockInfo.get(1), Float.parseFloat(stockInfo.get(2)));
     }
 
