@@ -72,6 +72,21 @@ public class StockController extends AbstractFinanceController {
         // get user from session
         User user = getUserFromSession(request);
 
+        // get stock data to check price
+        Stock stock;
+
+        try {
+            stock = Stock.lookupStock(symbol);
+        } catch (StockLookupException e) {
+            e.printStackTrace();
+            return this.displayError("Problem resolving stock symbol", model);
+        }
+
+        // verify sufficient funds
+        if (user.getCash() < stock.getPrice() * numberOfShares) {
+            return this.displayError("Insufficient funds", model);
+        }
+
         // format symbol
         symbol = symbol.toUpperCase();
 
