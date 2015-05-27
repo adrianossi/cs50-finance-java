@@ -76,7 +76,7 @@ public class StockController extends AbstractFinanceController {
             return this.displayError("Problem resolving stock symbol", model);
         }
 
-        // persist purchase
+        // persist updated holding
         stockHoldingDao.save(userPosition);
 
         // build confirmation message
