@@ -26,16 +26,16 @@ public class User extends AbstractEntity {
     // stored in user table
     private String userName;
     private String hash;
+    private float cash;
 
     // this property is stored in a separate table in the db,
     // the stockholding table, connected by foreign keys
     private Map<String, StockHolding> portfolio;
 
-    // TODO - add cash to user class
-
     public User(String userName, String password) {
         this.hash = PasswordHash.getHash(password);
         this.userName = userName;
+        this.cash = (float)10000.00;
         this.portfolio = new HashMap<String, StockHolding>();
     }
 
@@ -61,6 +61,14 @@ public class User extends AbstractEntity {
     @Column(name = "hash", nullable = false)
     public String getHash() {
         return hash;
+    }
+
+    @NotNull
+    @Column(name = "cash", nullable = false)
+    public float getCash() { return cash; }
+
+    public void setCash(float amount) {
+        this.cash = amount;
     }
 
     protected void setHash(String hash) {

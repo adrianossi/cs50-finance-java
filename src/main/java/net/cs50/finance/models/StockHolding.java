@@ -88,7 +88,7 @@ public class StockHolding extends AbstractEntity {
      * @throws IllegalArgumentException if numberOfShares < 0
      * @throws StockLookupException     if unable to lookup stock info
      */
-    private void buyShares(int numberOfShares) throws StockLookupException {
+    private StockTransaction buyShares(int numberOfShares) throws StockLookupException {
 
         if (numberOfShares < 0) {
             throw new IllegalArgumentException("Invalid number of shares.");
@@ -96,12 +96,10 @@ public class StockHolding extends AbstractEntity {
 
         setSharesOwned(sharesOwned + numberOfShares);
 
-        // TODO - update user cash on buy
-        // using this.ownerId to reference the necessary column
-
-
         StockTransaction transaction = new StockTransaction(this, numberOfShares, StockTransaction.TransactionType.BUY);
         this.transactions.add(transaction);
+
+        return transaction;
     }
 
     /**
@@ -111,7 +109,7 @@ public class StockHolding extends AbstractEntity {
      * @throws IllegalArgumentException if numberOfShares greater than shares owned
      * @throws StockLookupException     if unable to lookup stock info
      */
-    private void sellShares(int numberOfShares) throws StockLookupException {
+    private StockTransaction sellShares(int numberOfShares) throws StockLookupException {
 
         if (numberOfShares > sharesOwned) {
             throw new IllegalArgumentException("Number to sell exceeds shares owned for stock" + symbol);
@@ -121,6 +119,8 @@ public class StockHolding extends AbstractEntity {
 
         StockTransaction transaction = new StockTransaction(this, numberOfShares, StockTransaction.TransactionType.SELL);
         this.transactions.add(transaction);
+
+        return transaction;
     }
 
     /**
@@ -149,9 +149,10 @@ public class StockHolding extends AbstractEntity {
 
         // Conduct buy
         holding = userPortfolio.get(symbol);
-        holding.buyShares(numberOfShares);
-        
-       // TODO - update user cash on buy
+        StockTransaction transaction = holding.buyShares(numberOfShares);
+
+        // update user cash
+        user.setCash(user.getCash() - transaction.getShares() * transaction.getPrice());
 
         return holding;
     }
@@ -179,9 +180,10 @@ public class StockHolding extends AbstractEntity {
 
         // Conduct sale
         holding = userPortfolio.get(symbol);
-        holding.sellShares(numberOfShares);
+        StockTransaction transaction = holding.sellShares(numberOfShares);
 
-        // TODO - update user cash on sale
+        // update user cash
+        user.setCash(user.getCash() + transaction.getShares() * transaction.getPrice());
 
         return holding;
     }

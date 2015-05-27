@@ -86,6 +86,7 @@ public class StockController extends AbstractFinanceController {
 
         // persist updated holding
         stockHoldingDao.save(userPosition);
+        userDao.save(user);
 
         // build confirmation message
         String msg = "Purchase of " + numberOfShares;
@@ -159,6 +160,7 @@ public class StockController extends AbstractFinanceController {
 
         // persist updated holding
         stockHoldingDao.save(userPosition);
+        userDao.save(user);
 
         // build confirmation message
         String msg = "Sale of " + numberOfShares;
