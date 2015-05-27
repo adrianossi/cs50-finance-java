@@ -64,8 +64,16 @@ public class StockController extends AbstractFinanceController {
     @RequestMapping(value = "/buy", method = RequestMethod.POST)
     public String buy(String symbol, int numberOfShares, HttpServletRequest request, Model model) {
 
+        // validate data
+        if (numberOfShares < 1) {
+            return this.displayError("Invalid number of shares", model);
+        }
+
         // get user from session
         User user = getUserFromSession(request);
+
+        // format symbol
+        symbol = symbol.toUpperCase();
 
         // make purchase
         StockHolding userPosition;
@@ -129,8 +137,35 @@ public class StockController extends AbstractFinanceController {
     @RequestMapping(value = "/sell", method = RequestMethod.POST)
     public String sell(String symbol, int numberOfShares, HttpServletRequest request, Model model) {
 
-        // TODO - Implement sell action
+        // validate data
+        if (numberOfShares < 1) {
+            return this.displayError("Invalid number of shares", model);
+        }
 
+        // get user from session
+        User user = getUserFromSession(request);
+
+        // format symbol
+        symbol = symbol.toUpperCase();
+
+        // make sale
+        StockHolding userPosition;
+        try {
+            userPosition = StockHolding.sellShares(user, symbol, numberOfShares);
+        } catch (StockLookupException e) {
+            e.printStackTrace();
+            return this.displayError("Problem resolving stock symbol", model);
+        }
+
+        // persist updated holding
+        stockHoldingDao.save(userPosition);
+
+        // build confirmation message
+        String msg = "Sale of " + numberOfShares;
+        msg = (numberOfShares == 1) ? msg + " share of " : msg + " shares of ";
+        msg = msg + symbol + " confirmed.";
+
+        model.addAttribute("confirmMessage", msg);
         model.addAttribute("title", "Sell");
         model.addAttribute("action", "/sell");
         model.addAttribute("sellNavClass", "active");

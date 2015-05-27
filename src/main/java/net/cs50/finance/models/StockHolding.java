@@ -91,12 +91,14 @@ public class StockHolding extends AbstractEntity {
     private void buyShares(int numberOfShares) throws StockLookupException {
 
         if (numberOfShares < 0) {
-            throw new IllegalArgumentException("Can not purchase a negative number of shares.");
+            throw new IllegalArgumentException("Invalid number of shares.");
         }
 
         setSharesOwned(sharesOwned + numberOfShares);
+
         // TODO - update user cash on buy
         // using this.ownerId to reference the necessary column
+
 
         StockTransaction transaction = new StockTransaction(this, numberOfShares, StockTransaction.TransactionType.BUY);
         this.transactions.add(transaction);
@@ -116,7 +118,6 @@ public class StockHolding extends AbstractEntity {
         }
 
         setSharesOwned(sharesOwned - numberOfShares);
-        // TODO - update user cash on sale
 
         StockTransaction transaction = new StockTransaction(this, numberOfShares, StockTransaction.TransactionType.SELL);
         this.transactions.add(transaction);
@@ -149,6 +150,8 @@ public class StockHolding extends AbstractEntity {
         // Conduct buy
         holding = userPortfolio.get(symbol);
         holding.buyShares(numberOfShares);
+        
+       // TODO - update user cash on buy
 
         return holding;
     }
@@ -177,6 +180,8 @@ public class StockHolding extends AbstractEntity {
         // Conduct sale
         holding = userPortfolio.get(symbol);
         holding.sellShares(numberOfShares);
+
+        // TODO - update user cash on sale
 
         return holding;
     }

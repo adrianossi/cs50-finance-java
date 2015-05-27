@@ -33,7 +33,7 @@ public class Stock {
     private final String name;
 
     private Stock(String symbol, String name, float price) {
-        this.symbol = symbol;
+        this.symbol = symbol.toUpperCase();
         this.price = price;
         this.name = name;
     }
@@ -90,12 +90,18 @@ public class Stock {
         }
 
         // stockInfo should be a collection like { "YHOO", "Yahoo, Inc.", 123.45 }
-        // validate the data; bad data will have { "N/A", "N/A", "N/A" }
+        // validate the data; bad data will have { <bad symbol>, "N/A", "N/A" }
         if (stockInfo.get(2).equals("N/A")) {
             throw new StockLookupException("Invalid stock symbol", symbol);
         }
 
         // return Stock instance with valid data
+
+        // if Yahoo could not find the symbol, we'll get { symbol, "N/A", "N/A" }
+        if (stockInfo.get(1).equals("N/A") || stockInfo.get(2).equals("N/A")) {
+            throw new StockLookupException("Not a valid stock symbol", symbol);
+        }
+
         return new Stock(stockInfo.get(0), stockInfo.get(1), Float.parseFloat(stockInfo.get(2)));
     }
 
