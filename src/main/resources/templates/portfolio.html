@@ -10,9 +10,22 @@
 
     <div id="middle">
 
-        <!-- TODO - Display portfolio -->
-        <p>Portfolio!</p>
+        <h2 th:text="${portfolioGreeting}">Portfolio</h2>
 
+        <table>
+            <tr>
+                <th>Stock Name</th>
+                <th>Current Price</th>
+                <th>Shares Owned</th>
+                <th>Current Value</th>
+            </tr>
+            <tr th:each="position : ${positions}">
+                <td class="name" th:text="${position.value.name}">name</td>
+                <td class="price" th:text="${position.value.price}">price</td>
+                <td class="shares" th:text="${position.value.shares}">shares</td>
+                <td class="value" th:text="${position.value.value}">value</td>
+            </tr>
+        </table>
     </div>
 
     <div th:replace="template :: footer"></div>
