@@ -31,6 +31,7 @@ public class PasswordHash {
 
             //Converts message digest value in base 16 (hex)
             hash = new BigInteger(1, digest.digest()).toString(16);
+
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
